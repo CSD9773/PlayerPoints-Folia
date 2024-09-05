@@ -1,5 +1,6 @@
 package org.black_ixx.playerpoints;
 
+import com.tcoded.folialib.FoliaLib;
 import dev.rosewood.rosegarden.RosePlugin;
 import dev.rosewood.rosegarden.config.RoseSetting;
 import dev.rosewood.rosegarden.manager.Manager;
@@ -22,9 +23,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.ServicePriority;
 
-/**
- * Main plugin class for PlayerPoints.
- */
+
 public class PlayerPoints extends RosePlugin {
 
     private static PlayerPoints instance;
@@ -39,8 +38,8 @@ public class PlayerPoints extends RosePlugin {
 
     @Override
     public void enable() {
+        FoliaLib foliaLib = new FoliaLib(this);
         this.api = new PlayerPointsAPI(this);
-
         if (SettingKey.VAULT.get() && Bukkit.getPluginManager().isPluginEnabled("Vault")) {
             this.vaultLayer = new PlayerPointsVaultLayer(this);
 

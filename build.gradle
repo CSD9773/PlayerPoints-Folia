@@ -17,7 +17,6 @@ java {
 
 repositories {
     mavenCentral()
-
     maven { url = 'https://repo.rosewooddev.io/repository/public/' }
     maven { url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/' }
     maven { url = 'https://oss.sonatype.org/content/repositories/snapshots/' }
@@ -30,12 +29,13 @@ repositories {
 }
 
 dependencies {
-    api 'dev.rosewood:rosegarden:1.4.2'
-
+    api files('libs/Core-1.4.3-SNAPSHOT.jar')
+    implementation "com.github.technicallycoded:FoliaLib:main-SNAPSHOT"
     compileOnly 'org.spigotmc:spigot-api:1.21-R0.1-SNAPSHOT'
     compileOnly 'com.github.milkbowl:vault:1.7.3'
     compileOnly 'me.lokka30:treasury-api:1.2.1'
     compileOnly 'com.vexsoftware:votifier:2.7.2'
+    implementation 'org.bstats:bstats-bukkit:3.0.0'
     compileOnly 'me.clip:placeholderapi:2.11.3'
     compileOnly 'org.jetbrains:annotations:24.0.1'
     compileOnly 'me.realized:tokenmanager:3.2.5'
@@ -58,37 +58,7 @@ processResources {
 }
 
 shadowJar {
-    archiveClassifier.set(null)
-    minimize()
-
-    relocate('dev.rosewood.rosegarden', 'org.black_ixx.playerpoints.libs.rosegarden')
+    relocate("com.tcoded.folialib", "org.black_ixx.playerpoints.lib.folialib")
+    relocate("org.bstats", "org.black_ixx.playerpoints.libs.bstats")
+    relocate("dev.rosewood.rosegarden", "org.black_ixx.playerpoints.libs.rosegarden")
 }
-
-publishing {
-    publications {
-        shadow(MavenPublication) { publication ->
-            project.shadow.component(publication)
-            artifactId = 'playerpoints'
-            pom {
-                name = 'playerpoints'
-            }
-        }
-    }
-    repositories {
-        if (project.hasProperty('mavenUser') && project.hasProperty('mavenPassword')) {
-            maven {
-                credentials {
-                    username project.mavenUser
-                    password project.mavenPassword
-                }
-
-                def releasesRepoUrl = 'https://repo.rosewooddev.io/repository/public-releases/'
-                def snapshotsRepoUrl = 'https://repo.rosewooddev.io/repository/public-snapshots/'
-                url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
-            }
-        }
-    }
-}
-
-build.dependsOn shadowJar
-publishShadowPublicationToMavenRepository.dependsOn jar
